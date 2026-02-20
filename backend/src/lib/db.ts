@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { PrismaClient } from '@prisma/client/default'
+import { PrismaClient } from '@prisma/client'
 
 // Esta variable global evita crear múltiples conexiones cuando
 // nodemon reinicia el servidor en desarrollo

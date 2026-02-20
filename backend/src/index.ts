@@ -2,6 +2,7 @@ import 'dotenv/config'         // Carga las variables de .env
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
+import { productsRoute } from './routes/products.route' 
 
 const app = Fastify({
   logger: true    // Muestra logs en la terminal de cada petición
@@ -15,6 +16,8 @@ app.register(cors, {
 
 // Helmet — añade cabeceras de seguridad HTTP automáticamente
 app.register(helmet)
+
+app.register(productsRoute, { prefix: '/products' })
 
 // Ruta de salud — para verificar que el servidor está vivo
 app.get('/health', async () => {
