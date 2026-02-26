@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { productService } from '../services/product.service'
 import { createProductSchema, productQuerySchema } from '../schemas/product.schema'
+import { requireAuth, requireAdmin } from '../middleware/auth.middleware'
 
 export async function productsRoute(app: FastifyInstance) {
 
@@ -33,7 +34,9 @@ export async function productsRoute(app: FastifyInstance) {
 
   // POST /products — crea un producto nuevo
   // El body debe tener el formato definido en createProductSchema
-  app.post('/', async (request, reply) => {
+  app.post('/', {
+    preHandler: [requireAuth, requireAdmin]
+  }, async (request, reply) => {
     try {
       const data = createProductSchema.parse(request.body)
       const product = await productService.create(data)

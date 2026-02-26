@@ -25,6 +25,8 @@ export const productQuerySchema = z.object({
   search: z.string().optional(),
 })
 
+
+
 // Estos tipos los usarás en TypeScript para que el editor
 // sepa exactamente qué forma tienen tus datos
 export type CreateProductInput = z.infer<typeof createProductSchema>

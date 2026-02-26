@@ -7,7 +7,12 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@fastify/cookie": ["node_modules/@fastify/cookie/types/plugin.d.ts"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
