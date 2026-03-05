@@ -6,6 +6,9 @@ import cookie from '@fastify/cookie'
 import { productsRoute } from './routes/products.route' 
 import { categoriesRoute } from './routes/categories.route' 
 import { authRoute } from './routes/auth.route'
+import { usersRoute } from './routes/users.route'
+import { cartRoute } from './routes/carts.route'
+
 
 const app = Fastify({
   logger: true    // Muestra logs en la terminal de cada petición
@@ -24,6 +27,9 @@ app.register(cookie)
 app.register(authRoute, { prefix: '/auth' })
 app.register(productsRoute, { prefix: '/products' })
 app.register(categoriesRoute, { prefix: '/categories' }) 
+app.register(usersRoute, { prefix: '/users' }) 
+app.register(cartRoute, { prefix: '/cart' }) 
+
 
 // Ruta de salud — para verificar que el servidor está vivo
 app.get('/health', async () => {

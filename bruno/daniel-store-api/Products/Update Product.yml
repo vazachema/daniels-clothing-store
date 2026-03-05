@@ -1,0 +1,29 @@
+info:
+  name: Update Product
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/products/{{ID}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{name}}",
+        "basePrice": {{basePrice}}
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: name
+      value: Camiseta básica blanca actualizada
+    - name: basePrice
+      value: "34.99"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

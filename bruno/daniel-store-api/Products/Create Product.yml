@@ -1,0 +1,45 @@
+info:
+  name: Create Product
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/products"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{name}}",
+        "description": "{{description}}",
+        "basePrice": {{price}},
+        "categoryId": "{{UUID_Product}}",
+        "variants": {{variants}}
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  variables:
+    - name: UUID_Product
+      value: ""
+    - name: name
+      value: Camiseta básica blanca
+    - name: description
+      value: Camiseta 100% algodón orgánico, corte relajado y cómodo
+    - name: price
+      value: "29.99"
+    - name: variants
+      value: |-
+        [
+            { "sku": "CAM-BLA-S", "size": "S", "color": "blanco", "stock": 10 },
+            { "sku": "CAM-BLA-M", "size": "M", "color": "blanco", "stock": 15 },
+            { "sku": "CAM-BLA-L", "size": "L", "color": "blanco", "stock": 8 }
+          ]
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

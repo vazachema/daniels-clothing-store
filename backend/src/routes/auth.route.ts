@@ -34,8 +34,11 @@ export async function authRoute(app: FastifyInstance) {
   app.post('/login', async (request, reply) => {
     try {
       const data = loginSchema.parse(request.body)
-      const result = await authService.login(data)
-
+      const sessionId = request.cookies?.sessionId as string | undefined  // lee la cookie
+      const result = await authService.login(data, sessionId)
+      if (sessionId) {
+        reply.clearCookie('sessionId', { path: '/' })
+      }
       // El Refresh Token va en una cookie httpOnly
       reply.setCookie('refreshToken', result.refreshToken, REFRESH_COOKIE_OPTIONS)
 

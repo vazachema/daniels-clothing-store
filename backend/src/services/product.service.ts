@@ -61,7 +61,7 @@ export const productService = {
         variants: { orderBy: [{ color: 'asc' }, { size: 'asc' }] },
       },
     })
-
+    
     return product   // null si no existe — la ruta manejará el 404
   },
 

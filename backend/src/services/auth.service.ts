@@ -4,6 +4,7 @@ import { db } from '../lib/db'
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from '../lib/jwt'
 import { sendPasswordResetEmail } from '../lib/email'
 import { RegisterInput, LoginInput, ForgotPasswordInput, ResetPasswordInput } from '../schemas/auth.schema'
+import { cartService } from './cart.service'
 
 export const authService = {
 
@@ -41,7 +42,7 @@ export const authService = {
   },
 
   // LOGIN — verifica credenciales y devuelve los tokens
-  async login(data: LoginInput) {
+  async login(data: LoginInput, sessionId?: string) {
     // 1. Busca el usuario por email
     const user = await db.user.findUnique({ where: { email: data.email } })
 
@@ -63,10 +64,12 @@ export const authService = {
     const accessToken = createAccessToken(tokenPayload)
     const refreshToken = createRefreshToken(tokenPayload)
 
-    // 4. Guarda el Refresh Token en la base de datos
+    // 4. Guarda el Refresh Token en la base de datos y elimina el anterior si existe
     // Expira en 30 días — calculamos la fecha exacta
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30)
+
+    await db.refreshToken.deleteMany({ where: { userId: user.id } })
 
     await db.refreshToken.create({
       data: {
@@ -75,6 +78,10 @@ export const authService = {
         expiresAt,
       }
     })
+
+    if (sessionId) {
+      await cartService.mergeCarts(user.id, sessionId)
+    }
 
     return {
       accessToken,
