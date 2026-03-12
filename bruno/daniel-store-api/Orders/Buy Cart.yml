@@ -1,0 +1,48 @@
+info:
+  name: Buy Cart
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders/"
+  body:
+    type: json
+    data: |-
+      {
+        "shippingAddress": {
+          "name": "{{name}}",
+          "street": "{{street}}",
+          "city": "{{city}}",
+          "province": "{{province}}",
+          "postalCode": "{{postalCode}}",
+          "country": "{{country}}",
+          "phone": "{{phone}}"
+        }
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  variables:
+    - name: name
+      value: Daniel
+    - name: street
+      value: Menos
+    - name: city
+      value: Nose
+    - name: province
+      value: Lleida
+    - name: postalCode
+      value: "43720"
+    - name: country
+      value: ES
+    - name: phone
+      value: "600123456"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

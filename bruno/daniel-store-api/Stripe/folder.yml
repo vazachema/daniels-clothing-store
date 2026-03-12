@@ -1,7 +1,7 @@
 info:
-  name: Categories
+  name: Stripe
   type: folder
-  seq: 4
+  seq: 7
 
 request:
   auth: inherit

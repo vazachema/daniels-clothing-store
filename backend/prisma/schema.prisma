@@ -94,7 +94,7 @@ model CartItem {
 
   @@unique([cartId, variantId])
 }
-
+R
 model Order {
   id              String      @id @default(uuid())
   userId          String

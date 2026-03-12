@@ -1,8 +1,27 @@
 import { db } from '../lib/db'
 import { AddItemInput, UpdateItemInput } from '../schemas/cart.schema'
 import crypto from 'crypto'
+import { stripe } from '../lib/stripe'
 
 export const cartService = {
+
+    // Función interna — cancela el pedido pendiente si existe
+    // El _ delante es convención para indicar que es de uso interno
+    async _cancelPendingOrder(userId?: string) {
+        if (!userId) return   // si no hay usuario logueado, no hace nada
+
+        const pendingOrder = await db.order.findFirst({
+            where: { userId, status: 'PENDING' }
+        })
+
+        if (!pendingOrder) return
+
+        await stripe.paymentIntents.cancel(pendingOrder.stripePaymentId!)
+        await db.order.update({
+            where: { id: pendingOrder.id },
+            data: { status: 'CANCELLED' }
+        })
+    },
 
     // Obtiene o crea el carrito
     // Si el usuario está logueado busca por userId
@@ -71,6 +90,8 @@ export const cartService = {
 
     // Añade un producto al carrito
     async addItem(data: AddItemInput, userId?: string, sessionId?: string) {
+        await this._cancelPendingOrder(userId)
+
         // 1. Verifica que la variante existe y tiene stock
         const variant = await db.productVariant.findUnique({
             where: { id: data.variantId },
@@ -88,12 +109,15 @@ export const cartService = {
         if (variant.stock === 0) {
             throw new Error(`No quedan unidades disponibles`)
         } else if (variant.stock < data.quantity) {
-            throw new Error(`Solo quedan ${variant.stock} unidades disponibles`)
+            if (variant.stock === 1) {
+                throw new Error(`Solo queda 1 unidad disponible`)
+            } else {
+                throw new Error(`Solo quedan ${variant.stock} unidades disponibles`)
+            }
         }
 
         // 2. Obtiene o crea el carrito
         const cart = await this.getOrCreateCart(userId, sessionId)
-
         // 3. Verifica si la variante ya está en el carrito
         const existingItem = await db.cartItem.findUnique({
             where: {
@@ -110,8 +134,12 @@ export const cartService = {
 
             if (variant.stock === 0) {
                 throw new Error(`No quedan unidades disponibles`)
-            } else if (variant.stock < data.quantity) {
-                throw new Error(`Solo quedan ${variant.stock} unidades disponibles`)
+            } else if (variant.stock < newQuantity) {
+                if (variant.stock === 1) {
+                    throw new Error(`Solo queda 1 unidad disponible`)
+                } else {
+                    throw new Error(`Solo quedan ${variant.stock} unidades disponibles`)
+                }
             }
 
             return db.cartItem.update({
@@ -132,6 +160,8 @@ export const cartService = {
 
     // Actualiza la cantidad de un item
     async updateItem(itemId: string, data: UpdateItemInput, userId?: string, sessionId?: string) {
+        await this._cancelPendingOrder(userId)
+
         // Verifica que el item pertenece al carrito de este usuario
         // Seguridad importante — sin esto cualquiera podría modificar items ajenos
         const item = await db.cartItem.findFirst({
@@ -158,6 +188,8 @@ export const cartService = {
 
     // Elimina un item del carrito
     async removeItem(itemId: string, userId?: string, sessionId?: string) {
+        await this._cancelPendingOrder(userId)
+
         // Igual que updateItem — verifica que el item es de este usuario
         const item = await db.cartItem.findFirst({
             where: {
@@ -175,6 +207,8 @@ export const cartService = {
 
     // Vacía el carrito
     async clearCart(userId?: string, sessionId?: string) {
+        await this._cancelPendingOrder(userId)
+
         const cart = await db.cart.findFirst({
             where: userId ? { userId } : { sessionId }
         })

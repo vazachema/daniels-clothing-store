@@ -21,6 +21,8 @@ runtime:
       value: Camiseta básica blanca actualizada
     - name: basePrice
       value: "34.99"
+    - name: ID
+      value: ""
 
 settings:
   encodeUrl: true

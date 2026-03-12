@@ -10,11 +10,16 @@ http:
     type: json
     data: |-
       {
-        "name": "Daniel Actualizado"
+        "name": "{{name}}"
       }
   auth:
     type: bearer
     token: "{{token}}"
+
+runtime:
+  variables:
+    - name: name
+      value: Daniel Actualizado
 
 settings:
   encodeUrl: true

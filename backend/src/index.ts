@@ -8,6 +8,7 @@ import { categoriesRoute } from './routes/categories.route'
 import { authRoute } from './routes/auth.route'
 import { usersRoute } from './routes/users.route'
 import { cartRoute } from './routes/carts.route'
+import { ordersRoute } from './routes/orders.route'
 
 
 const app = Fastify({
@@ -23,12 +24,21 @@ app.register(cors, {
 // Helmet — añade cabeceras de seguridad HTTP automáticamente
 app.register(helmet)
 app.register(cookie)
+app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
+  try {
+    ;(req as any).rawBody = body
+    done(null, JSON.parse(body.toString()))
+  } catch (err: any) {
+    done(err, undefined)
+  }
+})
 
 app.register(authRoute, { prefix: '/auth' })
 app.register(productsRoute, { prefix: '/products' })
 app.register(categoriesRoute, { prefix: '/categories' }) 
 app.register(usersRoute, { prefix: '/users' }) 
 app.register(cartRoute, { prefix: '/cart' }) 
+app.register(ordersRoute, { prefix: '/orders' }) 
 
 
 // Ruta de salud — para verificar que el servidor está vivo

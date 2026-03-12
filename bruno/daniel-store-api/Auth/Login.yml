@@ -13,7 +13,9 @@ http:
         "email": "{{email}}",
         "password": "{{pass}}"
       }
-  auth: inherit
+  auth:
+    type: bearer
+    token: "{{token}}"
 
 runtime:
   variables:

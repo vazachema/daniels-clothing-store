@@ -1,0 +1,29 @@
+info:
+  name: Confirm Payment
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: https://api.stripe.com/v1/payment_intents/{{stripePaymentId}}/confirm
+  body:
+    type: form-urlencoded
+    data:
+      - name: payment_method
+        value: pm_card_visa
+      - name: return_url
+        value: http://localhost:3000/checkout/success
+  auth:
+    type: basic
+    username: sk_test_51T81j9JpIV1Z0xdDJoVOFW89MaBqb096LUAbrmGzRvZCqnXiGSWywAOBdxW9FOdGTX6u7VhCk5gbMuGNpdICh6qD00rhJQVGMH
+
+runtime:
+  variables:
+    - name: stripePaymentId
+      value: pi_3TAArDJpIV1Z0xdD1cHzTFH4
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

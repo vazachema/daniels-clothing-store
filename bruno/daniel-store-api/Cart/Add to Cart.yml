@@ -1,0 +1,27 @@
+info:
+  name: Add to Cart
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cart/items"
+  body:
+    type: json
+    data: '{"variantId": "{{variantID}}", "quantity": {{quantity}}}'
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  variables:
+    - name: variantID
+      value: 8904c414-c67c-4987-a7d4-9c46de0dcba3
+    - name: quantity
+      value: "4"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

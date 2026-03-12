@@ -41,3 +41,33 @@ export async function sendPasswordResetEmail(
     `,
   })
 }
+
+export async function sendOrderConfirmationEmail(
+  toEmail: string,
+  orderId: string,
+  total: number
+) {
+  const orderUrl = `${process.env.FRONTEND_URL}/account/orders/${orderId}`
+  console.log("¡Pedido confirmado! 🎉")
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: toEmail,
+    subject: '¡Pedido confirmado! 🎉',
+    html: `
+      <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto;">
+        <h2>¡Tu pedido ha sido confirmado!</h2>
+        <p>Hemos recibido tu pago correctamente.</p>
+        <p><strong>Total:</strong> ${total.toFixed(2)}€</p>
+        <a href="${orderUrl}"
+           style="background: #000; color: #fff; padding: 12px 24px;
+                  text-decoration: none; border-radius: 4px; display: inline-block;
+                  margin-top: 16px;">
+          Ver mi pedido
+        </a>
+        <p style="color: #666; margin-top: 16px; font-size: 12px;">
+          ID del pedido: ${orderId}
+        </p>
+      </div>
+    `,
+  })
+}

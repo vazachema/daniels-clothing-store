@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { cartService } from '../services/cart.service'
 import { addItemSchema, updateItemSchema } from '../schemas/cart.schema'
-import { requireAuth } from '../middleware/auth.middleware'
+import { optionalAuth, requireAuth } from '../middleware/auth.middleware'
 import crypto from 'crypto'
 
 // Configuración de la cookie del sessionId para carritos anónimos
@@ -28,7 +28,7 @@ export async function cartRoute(app: FastifyInstance) {
 
   // GET /cart — ver el carrito
   // Funciona tanto para usuarios logueados como anónimos
-  app.get('/', async (request, reply) => {
+  app.get('/', { preHandler: [optionalAuth] }, async (request, reply) => {
     try {
       const userId = (request as any).user?.userId
       const sessionId = getOrCreateSessionId(request, reply)
@@ -41,12 +41,11 @@ export async function cartRoute(app: FastifyInstance) {
   })
 
   // POST /cart/items — añadir producto
-  app.post('/items', async (request, reply) => {
+  app.post('/items', { preHandler: [optionalAuth] }, async (request, reply) => {
     try {
       const data = addItemSchema.parse(request.body)
       const userId = (request as any).user?.userId
       const sessionId = getOrCreateSessionId(request, reply)
-
       const item = await cartService.addItem(data, userId, sessionId)
       return reply.status(201).send(item)
     } catch (err: any) {
@@ -55,7 +54,7 @@ export async function cartRoute(app: FastifyInstance) {
   })
 
   // PATCH /cart/items/:id — actualizar cantidad
-  app.patch('/items/:id', async (request, reply) => {
+  app.patch('/items/:id', { preHandler: [optionalAuth] }, async (request, reply) => {
     try {
       const { id } = request.params as { id: string }
       const data = updateItemSchema.parse(request.body)
@@ -70,7 +69,7 @@ export async function cartRoute(app: FastifyInstance) {
   })
 
   // DELETE /cart/items/:id — eliminar un item
-  app.delete('/items/:id', async (request, reply) => {
+  app.delete('/items/:id', { preHandler: [optionalAuth] }, async (request, reply) => {
     try {
       const { id } = request.params as { id: string }
       const userId = (request as any).user?.userId
@@ -84,7 +83,7 @@ export async function cartRoute(app: FastifyInstance) {
   })
 
   // DELETE /cart — vaciar el carrito
-  app.delete('/', async (request, reply) => {
+  app.delete('/', { preHandler: [optionalAuth] }, async (request, reply) => {
     try {
       const userId = (request as any).user?.userId
       const sessionId = getOrCreateSessionId(request, reply)

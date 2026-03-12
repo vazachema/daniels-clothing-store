@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/products? {{baseUrl}}/products"
+  url: "{{baseUrl}}/products"
   params:
     - name: page
       value: "1"
@@ -15,9 +15,14 @@ http:
       value: "10"
       type: query
       disabled: true
-    - name: " {{baseUrl}}/products"
+    - name: " search"
+      value: camiseta
+      type: query
+      disabled: true
+    - name: "categoryId  "
       value: ""
       type: query
+      disabled: true
   auth: inherit
 
 settings:

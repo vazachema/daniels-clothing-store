@@ -6,7 +6,18 @@ info:
 http:
   method: POST
   url: "{{baseUrl}}/categories"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{name}}"
+      }
   auth: inherit
+
+runtime:
+  variables:
+    - name: name
+      value: Pantalones
 
 settings:
   encodeUrl: true

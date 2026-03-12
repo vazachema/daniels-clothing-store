@@ -43,3 +43,21 @@ export async function requireAdmin(request: FastifyRequest, reply: FastifyReply)
     return reply.status(403).send({ error: 'No tienes permisos para esta acción' })
   }
 }
+
+// Añade esta función al archivo existente
+// Diferencia con requireAuth:
+// requireAuth → si no hay token, rechaza con 401
+// optionalAuth → si no hay token, continúa sin user
+export async function optionalAuth(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const authHeader = request.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) return
+    // Si no hay token simplemente no hace nada — no rechaza
+
+    const token = authHeader.substring(7)
+    const payload = verifyAccessToken(token)
+    request.user = payload
+  } catch {
+    // Token inválido — lo ignoramos y continuamos como anónimo
+  }
+}

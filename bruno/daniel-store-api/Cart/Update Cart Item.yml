@@ -1,0 +1,31 @@
+info:
+  name: Update Cart Item
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/cart/items/{{itemId}}"
+  params:
+    - name: ""
+      value: ""
+      type: query
+  body:
+    type: json
+    data: '{"quantity": {{quantity}}}'
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  variables:
+    - name: itemId
+      value: 89470545-8b32-47f5-b6a1-196c23788fc1
+    - name: quantity
+      value: "1"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
