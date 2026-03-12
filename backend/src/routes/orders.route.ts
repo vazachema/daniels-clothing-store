@@ -29,6 +29,16 @@ export async function ordersRoute(app: FastifyInstance) {
         }
     })
 
+    // DELETE /orders/pending — cancela el payment pendiente
+    app.delete('/pending', { preHandler: [requireAuth] }, async (request, reply) => {
+        try {
+            await orderService.cancelPendingOrder(request.user!.userId)
+            return reply.send({ message: 'Pedido cancelado correctamente' })
+        } catch (err: any) {
+            return reply.status(400).send({ error: err.message })
+        }
+    })
+
     // GET /orders/:id — obtiene un pedido concreto
     app.get('/:id', { preHandler: [requireAuth] }, async (request, reply) => {
         try {

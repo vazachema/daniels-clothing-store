@@ -1,0 +1,22 @@
+info:
+  name: Delete Cart Item
+  type: http
+  seq: 4
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/cart/items/{{itemId}}"
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  variables:
+    - name: itemId
+      value: 89470545-8b32-47f5-b6a1-196c23788fc1
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

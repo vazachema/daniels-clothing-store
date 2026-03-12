@@ -1,5 +1,5 @@
 import { db } from '../lib/db'
-import { CreateProductInput, ProductQuery } from '../schemas/product.schema'
+import { CreateProductInput, ProductQuery, UpdateProductInput } from '../schemas/product.schema'
 
 export const productService = {
 
@@ -61,7 +61,7 @@ export const productService = {
         variants: { orderBy: [{ color: 'asc' }, { size: 'asc' }] },
       },
     })
-    
+
     return product   // null si no existe — la ruta manejará el 404
   },
 
@@ -97,4 +97,23 @@ export const productService = {
       include: { variants: true },
     })
   },
+  async update(id: string, data: UpdateProductInput) {
+    const product = await db.product.findUnique({ where: { id } })
+    if (!product) throw new Error('Producto no encontrado')
+
+    return db.product.update({
+      where: { id },
+      data,
+      include: { variants: true, images: true, category: true }
+    })
+  },
+  async toggleProduct(id: string) {
+    const product = await db.product.findUnique({ where: { id } })
+    if (!product) throw new Error('Producto no encontrado')
+
+    return await db.product.update({
+      where: { id },
+      data: { isActive: !product.isActive }
+    })
+  }
 }

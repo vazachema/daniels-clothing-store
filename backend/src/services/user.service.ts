@@ -1,5 +1,5 @@
 import { db } from '../lib/db'
-import { UpdateProfileInput } from '../schemas/user.schema'
+import { UpdateProfileInput, AddressInput } from '../schemas/user.schema'
 
 
 export const userService = {
@@ -37,5 +37,31 @@ export const userService = {
                 createdAt: true,
             }
         })
-    }
+    },
+    async getAddresses(userId: string) {
+        return db.address.findMany({
+            where: { userId },
+            orderBy: { isDefault: 'desc' }
+        })
+    },
+
+    async addAddress(userId: string, data: AddressInput) {
+        return db.address.create({
+            data: { ...data, userId }
+        })
+    },
+
+    async deleteAddress(addressId: string, userId: string) {
+        // Verifica que la dirección existe Y pertenece a este usuario
+        // Sin esta verificación, cualquier usuario podría borrar direcciones ajenas
+        const address = await db.address.findFirst({
+            where: { id: addressId, userId }
+        })
+
+        if (!address) {
+            throw new Error('Dirección no encontrada')
+        }
+
+        return db.address.delete({ where: { id: addressId } })
+    },
 }

@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { categoryService } from '../services/category.service'
-import { createCategorySchema } from '../schemas/category.schema'
+import { createCategorySchema, updateCategorySchema } from '../schemas/category.schema'
+import { requireAdmin, requireAuth } from '../middleware/auth.middleware'
 
 export async function categoriesRoute(app: FastifyInstance) {
 
@@ -16,7 +17,7 @@ export async function categoriesRoute(app: FastifyInstance) {
   })
 
   // POST /categories
-  app.post('/', async (request, reply) => {
+  app.post('/', { preHandler: [requireAuth, requireAdmin] }, async (request, reply) => {
     try {
       // 1. Valida los datos con Zod
       const data = createCategorySchema.parse(request.body)
@@ -27,6 +28,18 @@ export async function categoriesRoute(app: FastifyInstance) {
       // 3. Responde con 201 (creado) y los datos de la categoría
       return reply.status(201).send(category)
 
+    } catch (err: any) {
+      return reply.status(400).send({ error: err.message })
+    }
+  })
+
+  // PATCH /categories/:id — actualizar categoría (solo admin)
+  app.patch('/:id', { preHandler: [requireAuth, requireAdmin] }, async (request, reply) => {
+    try {
+      const { id } = request.params as { id: string }
+      const data = updateCategorySchema.parse(request.body)
+      const category = await categoryService.update(id, data)
+      return reply.send(category)
     } catch (err: any) {
       return reply.status(400).send({ error: err.message })
     }

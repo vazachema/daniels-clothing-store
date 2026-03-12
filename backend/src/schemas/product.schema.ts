@@ -11,7 +11,7 @@ export const createProductSchema = z.object({
   categoryId: z.uuid(),                       // debe ser un UUID válido
   variants: z.array(z.object({               // array de variantes (tallas/colores)
     sku: z.string().min(3),                  // código único del producto
-    size: z.enum(['XS','S','M','L','XL','XXL']),  // solo estos valores permitidos
+    size: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']),  // solo estos valores permitidos
     color: z.string(),
     stock: z.number().int().min(0),          // entero, no puede ser negativo
     priceModifier: z.number().default(0),    // extra sobre el precio base
@@ -25,9 +25,14 @@ export const productQuerySchema = z.object({
   search: z.string().optional(),
 })
 
+export const updateProductSchema = z.object({
+  name: z.string().min(2).max(100).optional(),
+  description: z.string().min(10).optional(),
+  basePrice: z.number().positive().optional(),
+  categoryId: z.uuid().optional(),
+})
 
 
-// Estos tipos los usarás en TypeScript para que el editor
-// sepa exactamente qué forma tienen tus datos
 export type CreateProductInput = z.infer<typeof createProductSchema>
 export type ProductQuery = z.infer<typeof productQuerySchema>
+export type UpdateProductInput = z.infer<typeof updateProductSchema>

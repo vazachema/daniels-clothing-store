@@ -12,7 +12,9 @@ http:
       {
         "name": "{{name}}"
       }
-  auth: inherit
+  auth:
+    type: bearer
+    token: "{{token}}"
 
 runtime:
   variables:

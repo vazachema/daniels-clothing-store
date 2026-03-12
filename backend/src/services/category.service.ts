@@ -1,5 +1,5 @@
 import { db } from '../lib/db'
-import { CreateCategoryInput } from '../schemas/category.schema'
+import { CreateCategoryInput, UpdateCategoryInput } from '../schemas/category.schema'
 
 export const categoryService = {
 
@@ -49,5 +49,14 @@ export const categoryService = {
     // SQL equivalente:
     // INSERT INTO categories (id, name, slug)
     // VALUES (gen_random_uuid(), 'Camisetas', 'camisetas');
+  },
+  async update(id: string, data: UpdateCategoryInput) {
+    const category = await db.category.findUnique({ where: { id } })
+    if (!category) throw new Error('Categoría no encontrada')
+
+    return db.category.update({
+      where: { id },
+      data
+    })
   },
 }

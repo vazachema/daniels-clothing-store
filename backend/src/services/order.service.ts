@@ -4,6 +4,26 @@ import { CreateOrderInput } from '../schemas/order.schema'
 import { sendOrderConfirmationEmail } from '../lib/email'
 
 export const orderService = {
+    async cancelPendingOrder(userId: string) {
+        const pendingOrder = await db.order.findFirst({
+            where: { userId, status: 'PENDING' }
+        })
+
+        if (!pendingOrder) {
+            throw new Error('No tienes ningún pedido pendiente de pago')
+        }
+
+        // Cancela en Stripe primero
+        if (pendingOrder.stripePaymentId) {
+            await stripe.paymentIntents.cancel(pendingOrder.stripePaymentId)
+        }
+
+        // Marca como cancelado en DB
+        await db.order.update({
+            where: { id: pendingOrder.id },
+            data: { status: 'CANCELLED' }
+        })
+    },
 
     // Crea el pedido y el PaymentIntent de Stripe
     async createOrder(userId: string, data: CreateOrderInput) {

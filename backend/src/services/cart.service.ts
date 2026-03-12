@@ -15,7 +15,6 @@ export const cartService = {
         })
 
         if (!pendingOrder) return
-
         await stripe.paymentIntents.cancel(pendingOrder.stripePaymentId!)
         await db.order.update({
             where: { id: pendingOrder.id },
