@@ -8,7 +8,6 @@ A production-grade clothing e-commerce platform built from scratch with a modern
 ---
 
 **Role:** Solo developer — designed and implemented the backend, building system architecture, database schema, and APIs independently.
-**Tech Stack Highlights:** TypeScript, Node.js, Fastify, Next.js, PostgreSQL, Redis, Stripe, Zod, Tailwind CSS
 
 ---
 
