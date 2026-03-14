@@ -1,6 +1,14 @@
 # Daniel Store — Full-Stack E-Commerce Platform
 
 A production-grade clothing e-commerce platform built from scratch with a modern, scalable architecture. This project covers the full software development lifecycle: system design, database modeling, REST API development, authentication, payment processing, and a server-side rendered storefront.
+- Full-stack: Next.js 14 frontend, Node.js + Fastify backend, PostgreSQL + Redis
+- Features: Authentication (JWT + refresh rotation), Cart, Orders, Stripe payments, Admin panel
+- Status: Backend complete, frontend in progress
+
+---
+
+**Role:** Solo developer — designed and implemented the backend, building system architecture, database schema, and APIs independently.
+**Tech Stack Highlights:** TypeScript, Node.js, Fastify, Next.js, PostgreSQL, Redis, Stripe, Zod, Tailwind CSS
 
 ---
 
